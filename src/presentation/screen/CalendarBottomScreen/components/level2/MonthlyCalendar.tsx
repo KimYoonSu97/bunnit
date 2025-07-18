@@ -3,7 +3,8 @@ import React from 'react';
 import { CALENDAR_DAY_LIST } from '../../../../../core/constant/calendar';
 import useMonthlyCalendar from './useMonthlyCalendar';
 import { styleSheet } from './monthlyCalendarStyle';
-import CalendarBody from './CalendarBody';
+import CalendarBody from './components/CalendarBody';
+
 
 const MonthlyCalendar = () => {
   const {
