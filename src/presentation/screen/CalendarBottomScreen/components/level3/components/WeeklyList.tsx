@@ -3,6 +3,8 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import useWeeklyList from './useWeeklyList';
 import dayjs from 'dayjs';
 import { weeklyStyle } from '../gestureCalendarStyle';
+import { useCalendarContext } from '../context/CelanderContext';
+import { getWeekOfMonth } from '../util/getWeekOfMonth';
 
 const { width } = Dimensions.get('window');
 
@@ -15,10 +17,10 @@ const getWeeklyList = (day: dayjs.Dayjs) => {
 
 const renderItem = ({
   item,
-  currentDay,
+  selectDate,
 }: {
   item: dayjs.Dayjs[];
-  currentDay: dayjs.Dayjs;
+  selectDate: dayjs.Dayjs | null;
 }) => {
   return (
     <View style={weeklyStyle.row}>
@@ -27,7 +29,10 @@ const renderItem = ({
           <Text
             style={[
               weeklyStyle.text,
-              item.isSame(currentDay, 'day') && styleSheet.selectDayText,
+              selectDate &&
+                item.isSame(selectDate, 'day') && {
+                  backgroundColor: 'red',
+                },
             ]}
           >
             {item.format('DD')}
@@ -38,29 +43,41 @@ const renderItem = ({
   );
 };
 
-const WeeklyList = ({
-  currentDay,
-  setCurrentDay,
-  selectWeekIndex,
-  setSelectWeekIndex,
-}: {
+const WeeklyList = ({}: // currentDay,
+// setCurrentDay,
+// selectWeekIndex,
+// setSelectWeekIndex,
+{
   currentDay: dayjs.Dayjs;
   setCurrentDay: (day: dayjs.Dayjs) => void;
   selectWeekIndex: number;
-  setSelectWeekIndex: React.Dispatch<React.SetStateAction<number>>;
+  // setSelectWeekIndex: React.Dispatch<React.SetStateAction<number>>;
 }) => {
-  // const { currentWeek, weekDayItemList, handleNextWeek, handlePrevWeek } =
-  //   useWeeklyList();
+  const {
+    calenderDataDay,
+    setCalenderDataDay,
+    selectDate,
+    setSelectDate,
+    currentWeek,
+    setCurrentWeek,
+    currentDay: today,
+  } = useCalendarContext();
+
   const flatListRef = useRef<FlatList>(null);
   const [isScrolling, setIsScrolling] = React.useState(false);
 
   const list = useMemo(() => {
     return [
-      getWeeklyList(currentDay.add(-1, 'week')),
-      getWeeklyList(currentDay),
-      getWeeklyList(currentDay.add(1, 'week')),
+      getWeeklyList(calenderDataDay.add(-1, 'week')),
+      getWeeklyList(calenderDataDay),
+      getWeeklyList(calenderDataDay.add(1, 'week')),
     ];
-  }, [currentDay]);
+  }, [calenderDataDay]);
+
+  useEffect(() => {
+    const currentWeekIndex = getWeekOfMonth(calenderDataDay);
+    setCurrentWeek(currentWeekIndex - 1);
+  }, [calenderDataDay, setCurrentWeek]);
 
   useEffect(() => {
     if (!isScrolling && flatListRef.current) {
@@ -69,7 +86,7 @@ const WeeklyList = ({
         animated: false,
       });
     }
-  }, [currentDay, isScrolling]);
+  }, [calenderDataDay, isScrolling]);
 
   const handleScrollBegin = () => {
     setIsScrolling(true);
@@ -79,14 +96,33 @@ const WeeklyList = ({
     const newIndex = Math.round(e.nativeEvent.contentOffset.x / width);
     setIsScrolling(false);
     if (newIndex === 0) {
-      setCurrentDay(dayjs(currentDay).add(-1, 'week'));
+      const newDataDay = dayjs(calenderDataDay).add(-1, 'week');
+      if (selectDate) {
+        if (selectDate.isSame(newDataDay, 'week')) {
+          setCalenderDataDay(selectDate);
+        } else {
+          setCalenderDataDay(newDataDay.startOf('week'));
+        }
+      } else {
+        setCalenderDataDay(newDataDay.startOf('week'));
+      }
     } else if (newIndex === 2) {
-      setCurrentDay(dayjs(currentDay).add(1, 'week'));
+      const newDataDay = dayjs(calenderDataDay).add(1, 'week');
+      if (selectDate) {
+        if (selectDate.isSame(newDataDay, 'week')) {
+          setCalenderDataDay(selectDate);
+        } else {
+          setCalenderDataDay(newDataDay.startOf('week'));
+        }
+      } else {
+        setCalenderDataDay(newDataDay.startOf('week'));
+      }
     }
   };
 
   return (
     <FlatList
+      ref={flatListRef}
       data={list}
       horizontal
       showsHorizontalScrollIndicator={false}
@@ -102,7 +138,7 @@ const WeeklyList = ({
       }}
       pagingEnabled
       keyExtractor={(item, index) => index.toString()}
-      renderItem={({ item }) => renderItem({ item, currentDay })}
+      renderItem={({ item }) => renderItem({ item, selectDate })}
     />
   );
 };

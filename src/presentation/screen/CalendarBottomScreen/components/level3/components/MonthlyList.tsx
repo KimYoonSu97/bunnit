@@ -10,6 +10,8 @@ import React, { useMemo, useRef, useEffect } from 'react';
 import dayjs from 'dayjs';
 import { weeklyStyle } from '../gestureCalendarStyle';
 import Animated from 'react-native-reanimated';
+import { useCalendarContext } from '../context/CelanderContext';
+import { getWeekOfMonth } from '../util/getWeekOfMonth';
 
 const getCalendarList = (day: dayjs.Dayjs) => {
   const startDayOfMonth = dayjs(day).startOf('month');
@@ -25,30 +27,41 @@ const getCalendarList = (day: dayjs.Dayjs) => {
 const { width } = Dimensions.get('window');
 
 const MonthlyList = ({
-  currentDay,
   setCurrentDay,
-  setSelectWeekIndex,
+  // setSelectWeekIndex,
   opacityAnimatedStyle,
-  selectWeekIndex,
-}: {
-  currentDay: dayjs.Dayjs;
+  isWeekly,
+}: // selectWeekIndex,
+{
   setCurrentDay: (day: dayjs.Dayjs) => void;
-  setSelectWeekIndex: React.Dispatch<React.SetStateAction<number>>;
+  // setSelectWeekIndex: React.Dispatch<React.SetStateAction<number>>;
   opacityAnimatedStyle: any;
-  selectWeekIndex: number;
+  // selectWeekIndex: number;
+  isWeekly: boolean;
 }) => {
   const flatListRef = useRef<FlatList>(null);
   const [isScrolling, setIsScrolling] = React.useState(false);
-
-  console.log('currentDay', currentDay.format('YYYY-MM'));
+  // 여기서 필요한건/
+  // 1. 달력을 그릴 날짜
+  // 2. 날짜를 선택했을떄 업데이트할 상태 및 함수
+  // 3. 선택된 날짜가 해당 월에 몇번째 줄인가? 에대한 인덱스를 저장할 함수
+  const {
+    calenderDataDay,
+    setCalenderDataDay,
+    selectDate,
+    setSelectDate,
+    selectWeekIndex,
+    setSelectWeekIndex,
+    currentWeek,
+  } = useCalendarContext();
 
   const list = useMemo(() => {
     return [
-      getCalendarList(currentDay.add(-1, 'month')),
-      getCalendarList(currentDay),
-      getCalendarList(currentDay.add(1, 'month')),
+      getCalendarList(calenderDataDay.add(-1, 'month')),
+      getCalendarList(calenderDataDay),
+      getCalendarList(calenderDataDay.add(1, 'month')),
     ];
-  }, [currentDay]);
+  }, [calenderDataDay]);
 
   // currentDay가 변경될 때 FlatList 위치 조정
   useEffect(() => {
@@ -58,7 +71,16 @@ const MonthlyList = ({
         animated: false,
       });
     }
-  }, [currentDay, isScrolling]);
+  }, [calenderDataDay, isScrolling]);
+
+  useEffect(() => {
+    //달 캘린더가 업데이트 될때
+    if (selectDate) {
+      if (selectDate.isSame(calenderDataDay, 'month')) {
+        setCalenderDataDay(selectDate);
+      }
+    }
+  }, [selectDate, setCalenderDataDay, calenderDataDay]);
 
   const handleScrollBegin = () => {
     setIsScrolling(true);
@@ -67,14 +89,34 @@ const MonthlyList = ({
   const handleMomentumScrollEnd = (e: any) => {
     const newIndex = Math.round(e.nativeEvent.contentOffset.x / width);
     setIsScrolling(false);
+
     if (newIndex === 0) {
-      // 0이면 이전 달로 이동
-      setCurrentDay(dayjs(currentDay).add(-1, 'month'));
-      setSelectWeekIndex(0);
+      const newDataDay = dayjs(calenderDataDay).add(-1, 'month');
+      if (selectDate) {
+        if (selectDate.isSame(newDataDay, 'month')) {
+          setCalenderDataDay(selectDate);
+        } else {
+          setCalenderDataDay(newDataDay.startOf('month'));
+          setSelectWeekIndex(0);
+        }
+      } else {
+        setCalenderDataDay(newDataDay.startOf('month'));
+        setSelectWeekIndex(0);
+      }
     } else if (newIndex === 2) {
       // 2면 다음 달로 이동
-      setCurrentDay(dayjs(currentDay).add(1, 'month'));
-      setSelectWeekIndex(0);
+      const newDataDay = dayjs(calenderDataDay).add(1, 'month');
+      if (selectDate) {
+        if (selectDate.isSame(newDataDay, 'month')) {
+          setCalenderDataDay(selectDate);
+        } else {
+          setCalenderDataDay(newDataDay.startOf('month'));
+          setSelectWeekIndex(0);
+        }
+      } else {
+        setCalenderDataDay(newDataDay.startOf('month'));
+        setSelectWeekIndex(0);
+      }
     }
   };
 
@@ -110,7 +152,7 @@ const MonthlyList = ({
                 key={weekIndex.toString()}
                 style={[
                   weeklyStyle.row,
-                  weekIndex !== selectWeekIndex && opacityAnimatedStyle,
+               
                 ]}
               >
                 {day.map(item => (
@@ -118,19 +160,21 @@ const MonthlyList = ({
                     key={item.format('YYYY-MM-DD')}
                     style={weeklyStyle.item}
                     onPress={() => {
-                      setCurrentDay(item);
+                      setSelectDate(item);
+                      setCalenderDataDay(item);
                       setSelectWeekIndex(weekIndex);
                     }}
                   >
                     <Text
                       style={[
                         weeklyStyle.text,
-                        item.isSame(currentDay, 'date') &&
-                          styleSheet.selectDayText,
-                        item.isSame(currentDay, 'month') &&
-                          styleSheet.isCurrentMonth,
-                        !item.isSame(currentDay, 'month') &&
+                        !item.isSame(calenderDataDay, 'month') &&
                           styleSheet.isOtherMonth,
+                        item.isSame(calenderDataDay, 'date') &&
+                          styleSheet.isCurrentMonth,
+                        item.isSame(selectDate, 'day') && {
+                          backgroundColor: 'red',
+                        },
                       ]}
                     >
                       {item.format('DD')}

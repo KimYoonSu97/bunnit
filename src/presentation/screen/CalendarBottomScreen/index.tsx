@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { commonStyleSheet } from '../../shared/style/commonStyleSheet';
 import MonthlyCalendar from './components/level2/MonthlyCalendar';
 import GestureCalendar from './components/level3/GestureCalendar';
+import CalendarProvider from './components/level3/context/CelanderContext';
 
 const Index = () => {
   const [level, setLevel] = useState<'2' | '3'>('2');
@@ -19,7 +20,11 @@ const Index = () => {
         title={level === '2' ? '3 ' : '2 '}
       />
       {level === '2' && <MonthlyCalendar />}
-      {level === '3' && <GestureCalendar />}
+      {level === '3' && (
+        <CalendarProvider>
+          <GestureCalendar />
+        </CalendarProvider>
+      )}
       {/* 캘린더 컨테이너 */}
     </View>
   );
