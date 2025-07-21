@@ -14,7 +14,6 @@ const CalendarBody = ({
   selectDay: dayjs.Dayjs | null;
   onPressDayItem: (item: dayjs.Dayjs) => void;
 }) => {
-  //7개씩 나눠서 이중배열 만들기
   const weeklyDayItemList = useMemo(() => {
     const result: dayjs.Dayjs[][] = [];
     for (let i = 0; i < dayItemList.length; i += 7) {

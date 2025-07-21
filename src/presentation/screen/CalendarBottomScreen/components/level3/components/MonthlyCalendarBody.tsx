@@ -110,7 +110,6 @@ const RenderItem = React.memo(
   }) => {
     const { onPressDay } = useCalendarContext();
 
-    // 7개로 나눠서 주단위로 묶여있는 이중배열
     const dayItem = useMemo(() => {
       const result: dayjs.Dayjs[][] = [];
       for (let i = 0; i < item.length; i += 7) {

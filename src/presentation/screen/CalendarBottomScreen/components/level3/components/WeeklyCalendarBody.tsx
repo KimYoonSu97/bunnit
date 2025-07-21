@@ -109,7 +109,6 @@ const WeeklyCalendarBody = () => {
     (e: any) => {
       const movement = e.nativeEvent.contentOffset.x / width;
       if (movement === 0) {
-        //이전달로
         const newBaseDay = dayjs(weeklyCalendarData)
           .subtract(1, 'week')
           .startOf('week')

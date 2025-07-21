@@ -17,10 +17,8 @@ const calendarBodyStyle = StyleSheet.create({
     paddingHorizontal: 16,
   },
   dayItem: {
-    // flex: 1,
     width: 40,
     height: 40,
-    // backgroundColor: 'pink',
     justifyContent: 'center',
     alignItems: 'center',
   },

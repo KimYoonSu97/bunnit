@@ -6,9 +6,7 @@ const useCalendarBottomScreen = () => {
   const [currentMonth, setCurrentMonth] = useState<dayjs.Dayjs>(dayjs());
   const [isWeekly, _setIsWeekly] = useState(false);
   const dayItemList = useMemo(() => {
-    //현재 달의 첫번째 일
     const startDayOfMonth = dayjs(currentMonth).startOf('month');
-    //현재 달의 첫번째 주의 시작일
     const startDayOfWeek = dayjs(startDayOfMonth).startOf('week');
 
     const endDayOfMonth = dayjs(currentMonth).endOf('month');
