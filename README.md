@@ -65,17 +65,3 @@ npm run android
 - 현재 주차 인덱스 추적
 - 전역 상태 관리를 통한 일관된 데이터 제공
 
-## 스크립트
-
-```bash
-# 개발 서버 시작
-npm start
-
-# 앱 실행
-npm run ios     # iOS
-npm run android # Android
-
-# 코드 품질
-npm run lint    # ESLint 검사
-npm test        # Jest 테스트 실행
-```
