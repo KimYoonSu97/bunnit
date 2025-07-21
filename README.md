@@ -16,6 +16,29 @@ React Native로 개발된 모바일 애플리케이션입니다. 직관적인 �
 - iOS: Xcode 14+
 - Android: Android SDK 33+
 
+## 프로젝트 실행
+
+```
+
+#의존성 설치
+npm install
+
+#pod 설치
+cd ios
+pod install
+#완료 후
+cd ..
+
+#개발 서버 열기
+npm start
+
+#가상기기 실행
+npm run ios
+npm run android
+
+
+```
+
 ## 캘린더 기능 상세
 
 ### level 1
