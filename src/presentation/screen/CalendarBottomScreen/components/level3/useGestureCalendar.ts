@@ -11,18 +11,30 @@ import { useCalendarContext } from './context/CalenderContext';
 
 const useGestureCalendar = () => {
   const [isMonthly, setIsMonthly] = useState(true);
+  const [showMonthly, setShowMonthly] = useState(true);
+  const [showWeekly, setShowWeekly] = useState(false);
   const {
     currentWeeklyCalendarIndex,
     monthlyCalendarData,
     weeklyCalendarData,
   } = useCalendarContext();
 
-  const changeMonthly = useCallback(() => {
-    setIsMonthly(true);
+  const changeToMonthly = useCallback(() => {
+    // 주 -> 월: 월캘린더 즉시 마운트, 0.1초 후 주캘린더 언마운트
+    setShowMonthly(true);
+    setTimeout(() => {
+      setShowWeekly(false);
+      setIsMonthly(true);
+    }, 100);
   }, []);
 
-  const changeWeekly = useCallback(() => {
-    setIsMonthly(false);
+  const changeToWeekly = useCallback(() => {
+    // 월 -> 주: 주캘린더 마운트, 0.1초 후 월캘린더 언마운트
+    setShowWeekly(true);
+    setTimeout(() => {
+      setShowMonthly(false);
+      setIsMonthly(false);
+    }, 100);
   }, []);
 
   const monthlyCalendarPosition = useSharedValue(0);
@@ -45,7 +57,7 @@ const useGestureCalendar = () => {
                   duration: 500,
                 },
                 () => {
-                  runOnJS(changeWeekly)();
+                  runOnJS(changeToWeekly)();
                 },
               ),
             );
@@ -55,7 +67,7 @@ const useGestureCalendar = () => {
           if (!isMonthly) {
             monthlyCalendarPosition.value =
               currentWeeklyCalendarIndex * -50 + 50;
-            runOnJS(changeMonthly)();
+            runOnJS(changeToMonthly)();
             monthlyCalendarOpacity.value = withTiming(1, {
               duration: 500,
             });
@@ -71,8 +83,8 @@ const useGestureCalendar = () => {
     [
       isMonthly,
       currentWeeklyCalendarIndex,
-      changeMonthly,
-      changeWeekly,
+      changeToMonthly,
+      changeToWeekly,
       monthlyCalendarOpacity,
       monthlyCalendarPosition,
     ],
@@ -90,6 +102,8 @@ const useGestureCalendar = () => {
     monthlyCalendarOpacity,
     monthlyCalendarPosition,
     isMonthly,
+    showMonthly,
+    showWeekly,
     monthlyCalendarData,
     weeklyCalendarData,
   };

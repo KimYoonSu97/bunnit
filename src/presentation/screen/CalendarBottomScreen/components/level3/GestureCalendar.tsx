@@ -41,8 +41,14 @@ const DayHeader = React.memo(() => {
 });
 
 const GestureCalendar = () => {
-  const { pan, monthlyCalendarStyle, monthlyCalendarOpacity, isMonthly } =
-    useGestureCalendar();
+  const {
+    pan,
+    monthlyCalendarStyle,
+    monthlyCalendarOpacity,
+    isMonthly,
+    showMonthly,
+    showWeekly,
+  } = useGestureCalendar();
   const { monthlyCalendarData, weeklyCalendarData } = useCalendarContext();
 
   const headerText = useMemo(() => {
@@ -54,8 +60,31 @@ const GestureCalendar = () => {
     () => ({
       overflow: 'hidden' as const,
       height: isMonthly ? 300 : 40,
+      position: 'relative' as const,
     }),
     [isMonthly],
+  );
+
+  const monthlyWrapperStyle = useMemo(
+    () => ({
+      position: 'absolute' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    }),
+    [],
+  );
+
+  const weeklyWrapperStyle = useMemo(
+    () => ({
+      position: 'absolute' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      height: 40,
+    }),
+    [],
   );
 
   return (
@@ -66,12 +95,17 @@ const GestureCalendar = () => {
       <DayHeader />
       <GestureDetector gesture={pan}>
         <Animated.View style={containerStyle}>
-          {isMonthly ? (
-            <Animated.View style={[monthlyCalendarStyle, { flex: 1 }]}>
-              <MonthlyCalendarBody opacity={monthlyCalendarOpacity} />
-            </Animated.View>
-          ) : (
-            <WeeklyCalendarBody />
+          {showMonthly && (
+            <View style={monthlyWrapperStyle}>
+              <Animated.View style={[monthlyCalendarStyle, { flex: 1 }]}>
+                <MonthlyCalendarBody opacity={monthlyCalendarOpacity} />
+              </Animated.View>
+            </View>
+          )}
+          {showWeekly && (
+            <View style={weeklyWrapperStyle}>
+              <WeeklyCalendarBody />
+            </View>
           )}
         </Animated.View>
       </GestureDetector>
