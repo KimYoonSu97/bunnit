@@ -1,12 +1,13 @@
 import dayjs from 'dayjs';
 
-export const getCalendarList = (day: dayjs.Dayjs) => {
-  const startDayOfMonth = dayjs(day).startOf('month');
-  const startDayOfWeek = dayjs(startDayOfMonth).startOf('week');
-  const endDayOfMonth = dayjs(day).endOf('month');
-  const endDayOfWeek = dayjs(endDayOfMonth).endOf('week');
+export const getCalendarList = (day: dayjs.Dayjs): dayjs.Dayjs[] => {
+  const startDayOfMonth = day.startOf('month');
+  const startDayOfWeek = startDayOfMonth.startOf('week');
+  const endDayOfMonth = day.endOf('month');
+  const endDayOfWeek = endDayOfMonth.endOf('week');
   const days = endDayOfWeek.diff(startDayOfWeek, 'day');
-  return Array.from({ length: days + 1 }, (item, index) => {
-    return startDayOfWeek.add(index, 'day');
-  });
+  
+  return Array.from({ length: days + 1 }, (_, index) => 
+    startDayOfWeek.add(index, 'day')
+  );
 };

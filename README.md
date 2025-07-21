@@ -1,97 +1,208 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# 🗓️ Bunnit - React Native 캘린더 애플리케이션
 
-# Getting Started
+캘린더 애플리케이션입니다. 월간/주간 뷰 전환, 제스처 기반 인터랙션을 제공합니다.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## 📱 주요 기능
 
-## Step 1: Start Metro
+### 🎯 핵심 기능
+- **월간/주간 캘린더 뷰**: 직관적인 제스처로 뷰 전환
+- **제스처 기반 인터랙션**: 상,하 스와이프로 월간/주간 전환
+- **반응형 디자인**: 다양한 화면 크기에 최적화
+- **성능 최적화**: React.memo, useMemo, useCallback 활용
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+### 🚀 기술적 특징
+- **메모이제이션 최적화**: 불필요한 리렌더링 방지
+- **컴포넌트 분리**: 단일 책임 원칙에 따른 구조화
+- **타입 안정성**: TypeScript로 타입 안정성 보장
+- **애니메이션**: React Native Reanimated 활용
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## 🛠️ 기술 스택
 
-```sh
-# Using npm
+### Frontend
+- **React Native** 0.80.1
+- **React** 19.1.0
+- **TypeScript** 5.0.4
+
+### Navigation
+- **React Navigation** 7.x
+- **Bottom Tab Navigator**
+
+### Animation & Gesture
+- **React Native Reanimated** 3.18.0
+- **React Native Gesture Handler** 2.27.1
+
+### Date Management
+- **Day.js** 1.11.13
+
+### Development Tools
+- **ESLint** - 코드 품질 관리
+- **Prettier** - 코드 포맷팅
+- **Jest** - 테스트 프레임워크
+
+## 📁 프로젝트 구조
+
+```
+bunnit/
+├── src/
+│   ├── core/
+│   │   ├── constant/
+│   │   │   └── calendar.ts          # 캘린더 상수
+│   │   └── navigation/
+│   │       └── BottomTabNavigation.tsx
+│   └── presentation/
+│       ├── screen/
+│       │   ├── CalendarBottomScreen/
+│       │   │   ├── components/
+│       │   │   │   ├── level2/      # 기본 월간 캘린더
+│       │   │   │   └── level3/      # 고급 제스처 캘린더
+│       │   │   │       ├── components/
+│       │   │   │       ├── context/
+│       │   │   │       ├── util/
+│       │   │   │       └── useGestureCalendar.ts
+│       │   │   └── index.tsx
+│       │   ├── HomeBottomScreen/
+│       │   ├── LibraryBottomScreen/
+│       │   └── MypageBottomScreen/
+│       └── shared/
+│           ├── hook/
+│           └── style/
+├── android/                          # Android 네이티브 코드
+├── ios/                             # iOS 네이티브 코드
+└── package.json
+```
+
+## 🚀 설치 및 실행
+
+### 필수 요구사항
+- Node.js >= 18
+- React Native CLI
+- Android Studio (Android 개발용)
+- Xcode (iOS 개발용)
+
+### 1. 저장소 클론
+```bash
+git clone [repository-url]
+cd bunnit
+```
+
+### 2. 의존성 설치
+```bash
+npm install
+# 또는
+yarn install
+```
+
+### 3. iOS 의존성 설치 (iOS 개발 시)
+```bash
+cd ios
+pod install
+cd ..
+```
+
+### 4. 개발 서버 실행
+```bash
+# Metro 번들러 시작
 npm start
-
-# OR using Yarn
+# 또는
 yarn start
 ```
 
-## Step 2: Build and run your app
+### 5. 앱 실행
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
+#### Android
+```bash
 npm run android
-
-# OR using Yarn
+# 또는
 yarn android
 ```
 
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+#### iOS
+```bash
 npm run ios
-
-# OR using Yarn
+# 또는
 yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## 📖 사용법
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+### 캘린더 기능
+1. **월간 뷰**: 기본적으로 월간 캘린더가 표시됩니다
+2. **주간 뷰 전환**: 아래로 스와이프하여 주간 뷰로 전환
+3. **월간 뷰 복귀**: 위로 스와이프하여 월간 뷰로 복귀
+4. **날짜 선택**: 원하는 날짜를 탭하여 선택
 
-## Step 3: Modify your app
+### 레벨 전환
+- **Level 2**: 기본 월간 캘린더 뷰
+- **Level 3**: 고급 제스처 기반 캘린더 뷰
 
-Now that you have successfully run the app, let's make changes!
+## 🔧 개발 가이드
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+### 코드 스타일
+- **들여쓰기**: 2칸 공백
+- **세미콜론**: 필수 사용
+- **문자열**: 단일 따옴표 사용
+- **네이밍**: camelCase (변수/함수), PascalCase (컴포넌트)
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+### 성능 최적화
+- `React.memo`를 사용한 컴포넌트 메모이제이션
+- `useMemo`와 `useCallback` 활용
+- 불필요한 리렌더링 방지
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+### 컴포넌트 구조
+```
+GestureCalendar
+├── DayHeader (메모이제이션)
+├── MonthlyCalendarBody
+│   ├── DayItem (메모이제이션)
+│   └── WeekRow (메모이제이션)
+└── WeeklyCalendarBody
+    └── WeeklyDayItem (메모이제이션)
+```
 
-## Congratulations! :tada:
+## 🧪 테스트
 
-You've successfully run and modified your React Native App. :partying_face:
+```bash
+# 테스트 실행
+npm test
+# 또는
+yarn test
+```
 
-### Now what?
+## 📝 주요 최적화 사항
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+### 1. 메모이제이션 최적화
+- 컴포넌트별 `React.memo` 적용
+- Props 변경 시에만 리렌더링
+- Context 값 메모이제이션
 
-# Troubleshooting
+### 2. 성능 개선
+- FlatList 최적화 (`getItemLayout`, `keyExtractor`)
+- 이벤트 핸들러 메모이제이션
+- 스타일 계산 최적화
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+### 3. 코드 품질
+- TypeScript 타입 안정성
+- 일관된 코딩 컨벤션
+- 컴포넌트 분리 및 재사용성
 
-# Learn More
+## 🤝 기여하기
 
-To learn more about React Native, take a look at the following resources:
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+## 📄 라이선스
+
+이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 `LICENSE` 파일을 참조하세요.
+
+## 👨‍💻 개발자
+
+- **개발자**: [Your Name]
+- **이메일**: [your.email@example.com]
+- **GitHub**: [@yourusername]
+
+---
+
+⭐ 이 프로젝트가 도움이 되었다면 스타를 눌러주세요!

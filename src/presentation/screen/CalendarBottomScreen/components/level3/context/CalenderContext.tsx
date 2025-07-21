@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useState,
+  useMemo,
 } from 'react';
 import { getWeekOfMonth } from '../util/getWeekOfMonth';
 
@@ -20,17 +21,19 @@ interface CalendarContextType {
   onPressDay: (day: dayjs.Dayjs, isMonthly: boolean) => void;
 }
 
-export const CalendarContext = createContext<CalendarContextType>({
+const defaultContext: CalendarContextType = {
   monthlyCalendarData: dayjs(),
-  setMonthlyCalendarData: (day: dayjs.Dayjs) => {},
+  setMonthlyCalendarData: () => {},
   weeklyCalendarData: dayjs(),
-  setWeeklyCalendarData: (day: dayjs.Dayjs) => {},
+  setWeeklyCalendarData: () => {},
   selectDate: null,
-  setSelectDate: (day: dayjs.Dayjs) => {},
+  setSelectDate: () => {},
   currentWeeklyCalendarIndex: 1,
-  setCurrentWeeklyCalendarIndex: (index: number) => {},
-  onPressDay: (day: dayjs.Dayjs, isMonthly: boolean) => {},
-});
+  setCurrentWeeklyCalendarIndex: () => {},
+  onPressDay: () => {},
+};
+
+export const CalendarContext = createContext<CalendarContextType>(defaultContext);
 
 const CalendarProvider = ({ children }: { children: React.ReactNode }) => {
   const [monthlyCalendarData, setMonthlyCalendarData] = useState(
@@ -68,20 +71,29 @@ const CalendarProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [weeklyCalendarData, monthlyCalendarData]);
 
+  const contextValue = useMemo(
+    () => ({
+      monthlyCalendarData,
+      setMonthlyCalendarData,
+      weeklyCalendarData,
+      setWeeklyCalendarData,
+      selectDate,
+      setSelectDate,
+      currentWeeklyCalendarIndex,
+      setCurrentWeeklyCalendarIndex,
+      onPressDay,
+    }),
+    [
+      monthlyCalendarData,
+      weeklyCalendarData,
+      selectDate,
+      currentWeeklyCalendarIndex,
+      onPressDay,
+    ],
+  );
+
   return (
-    <CalendarContext.Provider
-      value={{
-        monthlyCalendarData,
-        setMonthlyCalendarData,
-        weeklyCalendarData,
-        setWeeklyCalendarData,
-        selectDate,
-        setSelectDate,
-        currentWeeklyCalendarIndex,
-        setCurrentWeeklyCalendarIndex,
-        onPressDay,
-      }}
-    >
+    <CalendarContext.Provider value={contextValue}>
       {children}
     </CalendarContext.Provider>
   );

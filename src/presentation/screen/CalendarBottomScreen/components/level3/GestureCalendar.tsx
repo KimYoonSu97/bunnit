@@ -1,15 +1,9 @@
 import { View, Text, Dimensions, Button } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import MonthlyCalendarBody from './components/MonthlyCalendarBody';
 import WeeklyCalendarBody from './components/WeeklyCalendarBody';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, {
-  runOnJS,
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withTiming,
-} from 'react-native-reanimated';
+import { GestureDetector } from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
 import { useCalendarContext } from './context/CalenderContext';
 import { CALENDAR_DAY_LIST } from '../../../../../core/constant/calendar';
 import styles from './gestureCalendarStyle';
@@ -17,49 +11,61 @@ import useGestureCalendar from './useGestureCalendar';
 
 const width = Dimensions.get('window').width;
 
+const DayHeaderItem = React.memo(
+  ({ item, index }: { item: string; index: number }) => {
+    const textStyle = useMemo(
+      () => [
+        styles.dayHeaderItemText,
+        item === 'Sun' && { color: 'red' },
+        item === 'Sat' && { color: 'blue' },
+      ],
+      [item],
+    );
+
+    return (
+      <View style={styles.dayHeaderItem}>
+        <Text style={textStyle}>{item}</Text>
+      </View>
+    );
+  },
+);
+
+const DayHeader = React.memo(() => {
+  return (
+    <View style={styles.dayHeader}>
+      {CALENDAR_DAY_LIST.map((item, index) => (
+        <DayHeaderItem key={index} item={item} index={index} />
+      ))}
+    </View>
+  );
+});
+
 const GestureCalendar = () => {
-  const {
-    pan,
-    monthlyCalendarStyle,
-    monthlyCalendarOpacity,
-    isMonthly,
-  } = useGestureCalendar();
+  const { pan, monthlyCalendarStyle, monthlyCalendarOpacity, isMonthly } =
+    useGestureCalendar();
   const { monthlyCalendarData, weeklyCalendarData } = useCalendarContext();
+
+  const headerText = useMemo(() => {
+    const data = isMonthly ? monthlyCalendarData : weeklyCalendarData;
+    return `${data.format('YYYY')}년 ${data.format('MM')}월`;
+  }, [isMonthly, monthlyCalendarData, weeklyCalendarData]);
+
+  const containerStyle = useMemo(
+    () => ({
+      overflow: 'hidden' as const,
+      height: isMonthly ? 300 : 40,
+    }),
+    [isMonthly],
+  );
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>
-          {isMonthly
-            ? `${monthlyCalendarData.format(
-                'YYYY',
-              )}년 ${monthlyCalendarData.format('MM')}월`
-            : `${weeklyCalendarData.format(
-                'YYYY',
-              )}년 ${weeklyCalendarData.format('MM')}월`}
-        </Text>
+        <Text style={styles.headerText}>{headerText}</Text>
       </View>
-      <View style={styles.dayHeader}>
-        {CALENDAR_DAY_LIST.map((item, index) => {
-          return (
-            <View key={index} style={styles.dayHeaderItem}>
-              <Text
-                style={[
-                  styles.dayHeaderItemText,
-                  item === 'Sun' && { color: 'red' },
-                  item === 'Sat' && { color: 'blue' },
-                ]}
-              >
-                {item}
-              </Text>
-            </View>
-          );
-        })}
-      </View>
+      <DayHeader />
       <GestureDetector gesture={pan}>
-        <Animated.View
-          style={[{ overflow: 'hidden', height: isMonthly ? 300 : 40 }]}
-        >
+        <Animated.View style={containerStyle}>
           {isMonthly ? (
             <Animated.View style={[monthlyCalendarStyle, { flex: 1 }]}>
               <MonthlyCalendarBody opacity={monthlyCalendarOpacity} />
