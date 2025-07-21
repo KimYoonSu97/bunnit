@@ -17,7 +17,9 @@ const calendarBodyStyle = StyleSheet.create({
     paddingHorizontal: 16,
   },
   dayItem: {
-    flex: 1,
+    // flex: 1,
+    width: 40,
+    height: 40,
     // backgroundColor: 'pink',
     justifyContent: 'center',
     alignItems: 'center',
@@ -26,13 +28,10 @@ const calendarBodyStyle = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  today: {
-    backgroundColor: 'aqua',
-    borderRadius: 10,
-  },
+  today: {},
   selected: {
-    backgroundColor: 'red',
-    borderRadius: 10,
+    backgroundColor: 'aqua',
+    borderRadius: 50,
   },
 });
 

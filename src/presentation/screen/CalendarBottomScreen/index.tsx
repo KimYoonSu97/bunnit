@@ -17,7 +17,7 @@ const Index = () => {
             setLevel('2');
           }
         }}
-        title={level === '2' ? '3 ' : '2 '}
+        title={level === '2' ? 'level3 보기' : 'level2 보기'}
       />
       {level === '2' && <MonthlyCalendar />}
       {level === '3' && (

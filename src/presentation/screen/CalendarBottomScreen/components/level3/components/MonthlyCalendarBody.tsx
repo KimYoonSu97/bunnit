@@ -77,7 +77,6 @@ const MonthlyCalendarBody = ({ opacity }: { opacity: SharedValue<number> }) => {
   const {
     monthlyCalendarData,
     setMonthlyCalendarData,
-    weeklyCalendarData,
     setWeeklyCalendarData,
     selectDate,
     currentWeeklyCalendarIndex,
@@ -116,15 +115,7 @@ const MonthlyCalendarBody = ({ opacity }: { opacity: SharedValue<number> }) => {
         })}
         onMomentumScrollEnd={e => {
           const movement = e.nativeEvent.contentOffset.x / width;
-
           if (movement === 0) {
-            //이전달로
-
-            //만약 이전달로 넘어갈때 selectDate가 없거나 넘어갈 달이 selectDate와 같지 않다면?
-            //weeklyCalendarData를 해당 월의 첫번째 주로 변경해준다.
-            //만약 selectDate가 있고 넘어갈 달이 selectDate와 같다면?
-            //weeklyCalendarData를 selectDate가 포함된 주의 수요일로 변경해준다.
-
             const newBaseDay = dayjs(monthlyCalendarData)
               .subtract(1, 'month')
               .startOf('month');
@@ -133,30 +124,17 @@ const MonthlyCalendarBody = ({ opacity }: { opacity: SharedValue<number> }) => {
               if (selectDate.isSame(newBaseDay, 'month')) {
                 setWeeklyCalendarData(selectDate.startOf('week').add(3, 'day'));
               } else {
-                //이게 첫번째주
                 setWeeklyCalendarData(newBaseDay.startOf('week').add(3, 'day'));
               }
             } else {
-              //이게 첫번째주
               setWeeklyCalendarData(newBaseDay.startOf('week').add(3, 'day'));
             }
-
-            // if (!selectDate || !selectDate.isSame(newBaseDay, 'month')) {
-            //   setWeeklyCalendarData(newBaseDay.startOf('week').add(3, 'day'));
-            // } else {
-            //   setWeeklyCalendarData(selectDate.startOf('week').add(3, 'day'));
-            // }
-
             setMonthlyCalendarData(newBaseDay);
           }
           if (movement === 2) {
             const newBaseDay = dayjs(monthlyCalendarData)
               .add(1, 'month')
               .startOf('month');
-            //만약 다음달로 넘어갈때 selectDate가 없거나 넘어갈 달이 selectDate와 같지 않다면?
-            //weeklyCalendarData를 해당 월의 첫번째 주로 변경해준다.
-            //만약 selectDate가 있고 넘어갈 달이 selectDate와 같다면?
-            //weeklyCalendarData를 selectDate가 포함된 주의 수요일로 변경해준다.
             if (selectDate) {
               if (selectDate.isSame(newBaseDay, 'month')) {
                 setWeeklyCalendarData(selectDate.startOf('week').add(3, 'day'));
@@ -178,7 +156,6 @@ const MonthlyCalendarBody = ({ opacity }: { opacity: SharedValue<number> }) => {
               item={item}
               opacity={opacity}
               currentWeeklyCalendarIndex={currentWeeklyCalendarIndex}
-              // isAnimated={currentWeeklyCalendarIndex === index + 1}
             />
           );
         }}
