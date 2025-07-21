@@ -10,14 +10,12 @@ const useCalendarBottomScreen = () => {
     const startDayOfMonth = dayjs(currentMonth).startOf('month');
     //현재 달의 첫번째 주의 시작일
     const startDayOfWeek = dayjs(startDayOfMonth).startOf('week');
-    console.log('startWeek', startDayOfWeek.format());
-    console.log('startDay', startDayOfMonth.format());
+
     const endDayOfMonth = dayjs(currentMonth).endOf('month');
     const endDayOfWeek = dayjs(endDayOfMonth).endOf('week');
-    console.log('endDayOfMonth', endDayOfMonth.format());
-    console.log('endDayOfWeek', endDayOfWeek.format());
+
     const days = endDayOfWeek.diff(startDayOfWeek, 'day');
-    console.log(days);
+
     return Array.from({ length: days + 1 }, (item, index) => {
       return startDayOfWeek.add(index, 'day');
     });

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { commonStyleSheet } from '../../shared/style/commonStyleSheet';
 import MonthlyCalendar from './components/level2/MonthlyCalendar';
 import GestureCalendar from './components/level3/GestureCalendar';
-import CalendarProvider from './components/level3/context/CelanderContext';
+import CalendarProvider from './components/level3/context/CalenderContext';
 
 const Index = () => {
   const [level, setLevel] = useState<'2' | '3'>('2');
